@@ -1,4 +1,5 @@
 import ollama
+import json
 
 # ==============================
 # AI Helper Function (Ollama)
