@@ -85,7 +85,7 @@ pip install -r requirements.txt
     for jobs on Naukri based on keywords and experience.
   </p>
   <pre>
-python search_apply.py --keyword "Python Developer" --experience 2
+python search_apply.py 
   </pre>
 
   <h2>⚙️ Configuration</h2>
