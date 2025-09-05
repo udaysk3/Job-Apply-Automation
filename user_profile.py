@@ -1,61 +1,61 @@
 from datetime import datetime, timedelta
 
 # ==============================
-# User Profile (Dynamic)
+# User Profile (Dummy Example)
 # ==============================
 user_profile = {
-    "name": "Udaysantoshkumar Burlu",
-    "dob": "25-07-2003",
-    "Age": "22",
-    "phone": "9705795884",
-    "email": "your_email@gmail.com",
-    "password": "PASSWORD",   # 🔑 update
+    "name": "John Doe",
+    "dob": "15-08-1998",
+    "Age": "27",
+    "phone": "xxxxxxxxxx",
+    "email": "john.doe@example.com",
+    "password": "YourPassword123!",   # 🔑 update with real password before using
     "education": {
         "degree": "B.Tech",
         "branch": "Computer Science and Engineering",
-        "institute": "Lendi Institute of Engineering and Technology",
-        "cgpa": "8.9",
-        "year": "2020-2024"
+        "institute": "ABC Institute of Technology",
+        "cgpa": "8.2",
+        "year": "2016-2020"
     },
     "work_experience": [
         {
-            "company": "Think Future Technologies",
-            "role": "Software Engineer L1",
-            "duration": "Sep 2024 - Present",
-            "skills": ["Python", "Django", "Apache Solr", "Kubernetes", "Celery", "Redis", "AWS", "GCP", "Talend", "Dataform`"]
+            "company": "Tech Solutions Ltd",
+            "role": "Software Engineer",
+            "duration": "Jul 2022 - Present",
+            "skills": ["Python", "Django", "REST APIs", "AWS", "Docker", "CI/CD"]
         },
         {
-            "company": "Reform (Freelance)",
-            "role": "Python/Django Developer",
-            "duration": "Jan 2024 - Apr 2025",
-            "skills": ["Django", "CRM", "Backend Development", "Python"]
+            "company": "CodeWorks Inc",
+            "role": "Backend Developer",
+            "duration": "Jan 2021 - Jun 2022",
+            "skills": ["Node.js", "Express", "MongoDB", "Microservices"]
         },
         {
-            "company": "AlignAV",
-            "role": "NextJS + Django Developer",
-            "duration": "Dec 2023 - Feb 2024",
-            "skills": ["NextJS", "Django", "API Optimization", "Full stack", "Python"]
+            "company": "Freelance Projects",
+            "role": "Full Stack Developer",
+            "duration": "Jul 2020 - Dec 2020",
+            "skills": ["React", "Django", "MySQL", "API Integration"]
         }
     ],
     "skills": {
-        "languages": ["C", "C++", "Python", "HTML+CSS", "Java", "JavaScript"],
-        "frameworks": ["Django", "ReactJS", "NextJS", "Java EE"],
-        "tools": ["PowerBI", "Postman", "Git", "JIRA", "Photoshop"],
-        "databases": ["MySQL", "PostgreSQL", "SQLite", "Firebase", "AWS"],
+        "languages": ["C", "C++", "Python", "JavaScript", "Java"],
+        "frameworks": ["Django", "React", "Next.js", "Flask"],
+        "tools": ["Git", "Postman", "Docker", "JIRA", "VS Code"],
+        "databases": ["MySQL", "PostgreSQL", "SQLite"],
         "Cloud": ["AWS", "GCP"]
     },
     "preferences": {
-        "current_ctc": "7 LPA",
-        "expected_ctc": "12 LPA",
-        "notice_period": "15 days",
+        "current_ctc": "6 LPA",
+        "expected_ctc": "10 LPA",
+        "notice_period": "30 days",
         "relocation": "Yes",
-        "preferred_location": "Hyderabad",
+        "preferred_location": "Bangalore",
         "employment_type": "Full-time"
     },
     "achievements": [
-        "2nd Prize - INNO EXPO 360 Hackathon",
-        "1st Prize - App Design Contest",
-        "Jury Award - HackTriad"
+        "Winner - CodeFest Hackathon 2022",
+        "Runner-up - AI Challenge 2021",
+        "Best Project Award - College Tech Fest"
     ]
 }
 

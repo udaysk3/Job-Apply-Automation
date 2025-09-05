@@ -7,11 +7,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+
 # ==============================
 # Job Application Automation
 # ==============================
 def apply_jobs(profile):
     driver = start_browser()
+    external_urls = []  # store company site application links
 
     # Step 1: Login
     driver.get("https://www.naukri.com/")
@@ -30,83 +32,134 @@ def apply_jobs(profile):
     time.sleep(6)
 
     # Step 2: Recommended Jobs
-    driver.get("https://www.naukri.com/mnjuser/recommendedjobs?tabClusterId=profile")
-    time.sleep(5)
+    page = 1
+    while True:
+        driver.get(f"https://www.naukri.com/mnjuser/recommendedjobs?tabClusterId=profile&page={page}")
+        time.sleep(5)
 
-    job_cards = driver.find_elements(By.CLASS_NAME, "jobTuple")
-    print(f"\nFound {len(job_cards)} jobs to apply.")
+        job_cards = driver.find_elements(By.CLASS_NAME, "jobTuple")
+        if not job_cards:
+            print(f"\n❌ No jobs found on page {page}, stopping pagination.")
+            break
 
-    for idx, card in enumerate(job_cards, start=1):
-        try:
-            print(f"\n--- Opening job #{idx} ---")
-            card.click()
-            time.sleep(3)
+        print(f"\n📄 Page {page}: Found {len(job_cards)} jobs to apply.")
 
-            windows = driver.window_handles
-            if len(windows) > 1:
-                driver.switch_to.window(windows[-1])
-
-            # Apply
+        for idx, card in enumerate(job_cards, start=1):
             try:
-                driver.find_element(By.XPATH, "//button[contains(text(),'Apply')]").click()
+                print(f"\n--- Opening job #{idx} on page {page} ---")
+                card.click()
                 time.sleep(3)
-            except:
-                print("No Apply button.")
+
+                windows = driver.window_handles
+                if len(windows) > 1:
+                    driver.switch_to.window(windows[-1])
+
+                # Check if "Apply on company site" button exists
+                try:
+                    external_btn = driver.find_element(By.ID, "company-site-button")
+                    external_btn.click()
+                    time.sleep(3)
+
+                    # Switch to new window (company site)
+                    windows = driver.window_handles
+                    if len(windows) > 1:
+                        driver.switch_to.window(windows[-1])
+                        external_url = driver.current_url
+                        print(f"🌐 External job site detected → {external_url}")
+                        # external_urls.append(external_url)
+                        with open("external_jobs.txt", "a", encoding="utf-8") as f:
+                            f.write(external_url + "\n")
+                        driver.close()
+                        driver.switch_to.window(windows[0])
+                        continue
+                except:
+                    pass
+
+                # Try Apply
+                try:
+                    driver.find_element(By.XPATH, "//button[contains(text(),'Apply')]").click()
+                    time.sleep(3)
+                except:
+                    print("No Apply button.")
+                    driver.close()
+                    driver.switch_to.window(windows[0])
+                    continue
+
+                # Chatbot Mode
+                try:
+                    while True:
+                        questions = driver.find_elements(By.XPATH, "//div[contains(@class,'botMsg')]")
+                        old_count = len(questions)
+
+                        latest_question = get_latest_question(driver)
+                        if not latest_question:
+                            print("⚠ No valid question found → stopping chatbot.")
+                            break
+                        print("Bot asked:", latest_question)
+
+                        ans = get_ai_answer(latest_question, profile)
+
+                        chat_input = driver.find_element(By.XPATH, "//div[contains(@class,'textArea') and @contenteditable='true']")
+                        chat_input.click()
+                        chat_input.send_keys(ans)
+                        chat_input.send_keys(Keys.ENTER)
+
+                        time.sleep(2)
+                        if not wait_for_new_question(driver, old_count, timeout=10):
+                            print("No new question → chatbot finished.")
+                            break
+                    print("✅ Filled chatbot form")
+
+                except Exception as e:
+                    print("Chatbot answering failed:", e)
+                    fill_dynamic_form(driver, profile)
+
+                # Final Submit
+                try:
+                    driver.find_element(By.XPATH, "//button[contains(text(),'Submit') or contains(text(),'Apply')]").click()
+                    print("✅ Application Submitted")
+                except:
+                    print("⚠ No final Submit button / Already applied")
+
+                time.sleep(2)
                 driver.close()
                 driver.switch_to.window(windows[0])
-                continue
-
-            # Chatbot Mode
-            try:
-                # Keep answering until no new question appears
-                while True:
-                    questions = driver.find_elements(By.XPATH, "//div[contains(@class,'botMsg')]")
-                    old_count = len(questions)
-
-                    latest_question = get_latest_question(driver)
-                    if not latest_question:
-                        print("⚠ No valid question found → stopping chatbot.")
-                        break
-                    print("Bot asked:", latest_question)
-
-                    # AI generates answer dynamically
-                    ans = get_ai_answer(latest_question, profile)
-                    
-                    # Find chat input and type the answer
-                    chat_input = driver.find_element(By.XPATH, "//div[contains(@class,'textArea') and @contenteditable='true']")
-                    chat_input.click()
-                    chat_input.send_keys(ans)
-                    chat_input.send_keys(Keys.ENTER)
-
-                    time.sleep(2)  # wait for bot to respond
-                    if not wait_for_new_question(driver, old_count, timeout=10):
-                        print("No new question → chatbot finished.")
-                        break
-                print("Filled chatbot form")
+                time.sleep(2)
 
             except Exception as e:
-                print("Chatbot answering failed:", e)
-                fill_dynamic_form(driver, profile)
+                print("Error in job #", idx, ":", e)
+                driver.switch_to.window(driver.window_handles[0])
 
+        # ==============================
+        # Next Page Handling
+        # ==============================
+        try:
+            pagination = driver.find_element(By.CLASS_NAME, "styles_pagination__oIvXh")
+            next_button = pagination.find_element(By.XPATH, ".//a[span[text()='Next']]")
 
-            # Submit
-            try:
-                driver.find_element(By.XPATH, "//button[contains(text(),'Submit') or contains(text(),'Apply')]").click()
-                print("✅ Application Submitted")
-            except:
-                print("⚠ No final Submit button / Already applied")
+            # Check if disabled
+            if "disabled" in next_button.get_attribute("class"):
+                print("✅ Reached last page.")
+                break
+            else:
+                driver.execute_script("arguments[0].click();", next_button)  # safer than normal click
+                time.sleep(5)
+                page += 1
+                continue
+        except:
+            print("✅ No more pages found.")
+            break
 
-            time.sleep(2)
-            driver.close()
-            driver.switch_to.window(windows[0])
-            time.sleep(2)
-
-        except Exception as e:
-            print("Error in job #", idx, ":", e)
-            driver.switch_to.window(driver.window_handles[0])
+    # Save external job URLs
+    # if external_urls:
+    #     with open("external_jobs.txt", "w", encoding="utf-8") as f:
+    #         for url in external_urls:
+    #             f.write(url + "\n")
+    #     print(f"\n🌍 Saved {len(external_urls)} external job URLs to external_jobs.txt")
 
     print("\n🎉 All jobs processed.")
     driver.quit()
+
 
 # ==============================
 # Main Run

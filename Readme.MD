@@ -13,39 +13,39 @@
 
   <h2>📂 Project Structure</h2>
   <pre>
-.
-├── ai_helper.py        # Functions for AI integration (Ollama, prompt handling)
-├── selenium_helper.py  # Selenium helpers for interacting with chatbot
-├── user_profile.py     # User profile & configuration
-├── main.py             # Entry point to run the Naukri chatbot automation
-├── search_apply.py     # Script to search & apply for jobs (by keyword & experience)
-├── requirements.txt    # Python dependencies
-└── README.md           # Setup & usage guide
+  .
+  ├── ai_helper.py        # Functions for AI integration (Ollama, prompt handling)
+  ├── selenium_helper.py  # Selenium helpers for interacting with chatbot
+  ├── user_profile.py     # User profile & configuration
+  ├── main.py             # Entry point to run the Naukri chatbot automation
+  ├── search_apply.py     # Script to search & apply for jobs (by keyword & experience)
+  ├── requirements.txt    # Python dependencies
+  └── README.md           # Setup & usage guide
   </pre>
 
   <h2>🛠️ Setup Instructions</h2>
 
   <h3>1. Clone the Repository</h3>
   <pre>
-git clone https://github.com/your-username/naukri-ai-helper.git
-cd naukri-ai-helper
+  git clone https://github.com/udaysk3/Job-Apply-Automation.git
+  cd Job-Apply-Automation
   </pre>
 
   <h3>2. Create & Activate Virtual Environment</h3>
   <b>Linux / macOS:</b>
   <pre>
-python3 -m venv venv
-source venv/bin/activate
+  python3 -m venv venv
+  source venv/bin/activate
   </pre>
   <b>Windows (PowerShell):</b>
   <pre>
-python -m venv venv
-venv\Scripts\activate
+  python -m venv venv
+  venv\Scripts\activate
   </pre>
 
   <h3>3. Install Dependencies</h3>
   <pre>
-pip install -r requirements.txt
+  pip install -r requirements.txt
   </pre>
 
   <h3>4. Install Ollama</h3>
@@ -69,7 +69,20 @@ pip install -r requirements.txt
     <li>🔗 <a href="https://googlechromelabs.github.io/chrome-for-testing/#stable" target="_blank">Download ChromeDriver</a> (official site)</li>
     <li>🔗 <a href="https://chromedriver.chromium.org/downloads" target="_blank">Alternative ChromeDriver Downloads</a></li>
   </ul>
-  <p>Make sure ChromeDriver version matches your installed Chrome browser.</p>
+  <p>
+    Make sure the ChromeDriver version matches your installed Chrome browser.  
+    Once downloaded, extract it and update the path in
+    <code>selenium_helper.py</code>:
+  </p>
+  <pre>
+  # selenium_helper.py (line 15)
+  from selenium.webdriver.chrome.service import Service
+  service = Service(r"C:\chromedriver-win64\chromedriver.exe")  # 🔑 update path
+  </pre>
+  <p>
+    Replace <code>C:\chromedriver-win64\chromedriver.exe</code> with the actual
+    path where you saved ChromeDriver on your system.
+  </p>
 
   <h3>6. Pull the Required AI Model</h3>
   <p>Example: pulling <b>Llama 3.1</b></p>
@@ -85,7 +98,7 @@ pip install -r requirements.txt
     for jobs on Naukri based on keywords and experience.
   </p>
   <pre>
-python search_apply.py 
+  python search_apply.py 
   </pre>
 
   <h2>⚙️ Configuration</h2>

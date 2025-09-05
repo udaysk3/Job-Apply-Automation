@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import Select
 # Wait Helper for Chatbot Qs
 # ==============================
 
-def wait_for_new_question(driver, old_count, timeout=8):
+def wait_for_new_question(driver, old_count, timeout=10):
     """Wait until a new chatbot question appears."""
     try:
         WebDriverWait(driver, timeout).until(
